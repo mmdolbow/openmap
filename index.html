@@ -122,6 +122,7 @@ d3.json("opencounties.geojson", function(error, collection) {
 
   /* Select a feature and update the info window */
   function selectFeature(e) {
+    d3.select("*").attr("class","");
     info.update("<h4>" + e.properties.COUNTYNAME + " County</h4><b>" + e.properties.STATUSTEXT + "</b><br />" +
     (e.properties.OPENYEAR != null ? "<b>Year Opened: " + e.properties.OPENYEAR + "</b><br />": "" ) +
     (e.properties.PLCYYEAR != null ? "<b>Policy Approved: " + e.properties.PLCYYEAR + "</b>" : "" )
