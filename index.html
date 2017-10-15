@@ -40,11 +40,11 @@ county {
 .county {
       stroke: #fff;
 
-    }
-    .hover {
-        stroke: #fff;
-        opacity: .5
-    }
+}
+.hover {
+    stroke: #fff;
+    opacity: .5
+}
 
 </style>
 <head>
@@ -53,10 +53,8 @@ county {
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
-  <link rel="stylesheet" href="//unpkg.com/leaflet@1.1.0/dist/leaflet.css"
-    integrity="sha512-wcw6ts8Anuw10Mzh9Ytw4pylW8+NAD4ch3lqm9lzAsTxg0GFeJgoAtxuCLREZSC5lUXdVyo/7yfsqFjQ4S+aKw=="
-    crossorigin=""/>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.5/leaflet.js"></script>
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
 </head>
 
 <div id="map">
@@ -93,23 +91,16 @@ d3.json("opencounties.geojson", function(error, collection) {
     .attr("d", path)
     .attr("class", "county")
     .style("fill", function(d) { return color(d.properties.OPENSTATUS); })
-    .on("touch", function(d) {
-      info.update("<h4>" + d.properties.COUNTYNAME + " County</h4><b>" + d.properties.STATUSTEXT + "</b><br />" + (d.properties.OPENYEAR != null ? "<b>Year Opened: " + d.properties.OPENYEAR + "</b><br />": "" ) + (d.properties.PLCYYEAR != null ? "<b>Policy Approved: " + d.properties.PLCYYEAR + "</b>" : "" ) );
-      d3.select(this).attr("class","hover");})
-    .on ("mouseover", function(d) {
-      //d3.select("info").text(d.properties.COUNTYNAME);
-    info.update("<h4>" + d.properties.COUNTYNAME + " County</h4><b>" + d.properties.STATUSTEXT + "</b><br />" + (d.properties.OPENYEAR != null ? "<b>Year Opened: " + d.properties.OPENYEAR + "</b><br />": "" ) + (d.properties.PLCYYEAR != null ? "<b>Policy Approved: " + d.properties.PLCYYEAR + "</b>" : "" ) );
-    //feature.attr("class", "hover");
-    d3.select(this).attr("class","hover");})
-    .on ("mouseout", function(d) {
-      //d3.select("info").text(d.properties.COUNTYNAME);
+    .on("mouseover", selectFeature)
+    .on("mouseout", function(d) {
       feature.attr("class", "county");
-    info.update('Hover over a County');
-
+      info.update('Hover over a County');
     });
 
 
   map.on("viewreset", reset);
+  feature.on("click", selectFeature); //Add click class (also tap for mobile)
+
   reset();
 
   // Reposition the SVG to cover the features.
@@ -127,6 +118,15 @@ d3.json("opencounties.geojson", function(error, collection) {
 
     feature.attr("d", path);
 
+  }
+
+  /* Select a feature and update the info window */
+  function selectFeature(e) {
+    info.update("<h4>" + e.properties.COUNTYNAME + " County</h4><b>" + e.properties.STATUSTEXT + "</b><br />" +
+    (e.properties.OPENYEAR != null ? "<b>Year Opened: " + e.properties.OPENYEAR + "</b><br />": "" ) +
+    (e.properties.PLCYYEAR != null ? "<b>Policy Approved: " + e.properties.PLCYYEAR + "</b>" : "" )
+  );
+    d3.select(this).attr("class","hover");
   }
 
   // Use Leaflet to implement a D3 geometric transformation.
@@ -152,3 +152,6 @@ info.update = function (htmltxt) {
 
 info.addTo(map);
 </script>
+
+</body>
+</html>
